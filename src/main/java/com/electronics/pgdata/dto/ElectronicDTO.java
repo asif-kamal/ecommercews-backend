@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class ElectronicDTO {
-    private Long id;
+    private String id;
     private Price prices;
     private String asins;
     private String brand;
