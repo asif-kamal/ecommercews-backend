@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.electronics.pgdata.model.Electronic;
@@ -18,11 +21,21 @@ public class ElectronicService {
         this.repository = repository;
     }
     
-    public List<Electronic> getAllElectronics() {
-        return repository.findAll();
+    public Optional<Electronic> getElectronicById(String id) {
+        return repository.findById(id);
+    }
+
+    public List<Electronic> findByCategory(String category) {
+        return repository.findByCategory(category);
+    }
+
+    public Page<Electronic> getAllElectronics(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return repository.findAll(pageable);
     }
     
-    public Optional<Electronic> getElectronicById(Long id) {
-        return repository.findById(id);
+    public Page<Electronic> getByBrand(String brand, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return repository.findByBrand(brand, pageable);
     }
 }
