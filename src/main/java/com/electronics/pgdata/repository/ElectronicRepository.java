@@ -13,6 +13,17 @@ import com.electronics.pgdata.model.Electronic;
 
 @Repository
 public interface ElectronicRepository extends JpaRepository<Electronic, String> {
+
+    @Query("SELECT e FROM Electronic e WHERE " +
+           "LOWER(e.name) LIKE %:query% OR " +
+           "LOWER(e.brand) LIKE %:query% OR " +
+           "LOWER(e.manufacturer) LIKE %:query% OR " +
+           "LOWER(e.primaryCategories) LIKE %:query% OR " +
+           "LOWER(e.categories) LIKE %:query%")
+    Page<Electronic> searchByNameOrDescriptionOrBrand(@Param("query") String query, Pageable pageable);
+    @Query(value = "SELECT * FROM cleaneddata02_electronics ORDER BY RANDOM() LIMIT :limit", 
+           nativeQuery = true)
+    List<Electronic> findRandomElectronics(@Param("limit") int limit);
     Page<Electronic> findByBrand(String brand, Pageable pageable);
     List<Electronic> findByPricesAmountMaxLessThan(Double maxPrice);
     
