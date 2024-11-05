@@ -17,13 +17,21 @@ import com.electronics.pgdata.service.ElectronicService;
 
 @RestController
 @RequestMapping("/api/electronics")
-@CrossOrigin(origins = "http://localhost:3000") // Adjust as needed for your frontend
+@CrossOrigin(origins = "http://localhost:3000")
 public class ElectronicController {
     private final ElectronicService service;
     
     @Autowired
     public ElectronicController(ElectronicService service) {
         this.service = service;
+    }
+    
+    @GetMapping("/search")
+    public ResponseEntity<Page<Electronic>> searchElectronics(
+            @RequestParam String query,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size) {
+        return ResponseEntity.ok(service.searchElectronics(query, page, size));
     }
     
     @GetMapping("/{id}")
@@ -41,7 +49,7 @@ public class ElectronicController {
     @GetMapping
     public ResponseEntity<Page<Electronic>> getAllElectronics(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "12") int size) {
         return ResponseEntity.ok(service.getAllElectronics(page, size));
     }
     
@@ -49,7 +57,14 @@ public class ElectronicController {
     public ResponseEntity<Page<Electronic>> getByBrand(
             @PathVariable String brand,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "12") int size) {
         return ResponseEntity.ok(service.getByBrand(brand, page, size));
+    }
+
+    @GetMapping("/shop")
+    public ResponseEntity<Page<Electronic>> getRandomElectronics(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size) {
+        return ResponseEntity.ok(service.getRandomElectronics(page, size));
     }
 }
