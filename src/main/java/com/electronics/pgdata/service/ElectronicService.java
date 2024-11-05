@@ -3,8 +3,8 @@ package com.electronics.pgdata.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,11 +14,21 @@ import com.electronics.pgdata.repository.ElectronicRepository;
 
 @Service
 public class ElectronicService {
+    
     private final ElectronicRepository repository;
     
-    @Autowired
     public ElectronicService(ElectronicRepository repository) {
         this.repository = repository;
+    }
+
+    public Page<Electronic> getRandomElectronics(int page, int size) {
+        List<Electronic> randomItems = repository.findRandomElectronics(size);
+        return new PageImpl<>(randomItems, PageRequest.of(page, size), repository.count());
+    }
+    
+    public Page<Electronic> searchElectronics(String query, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return repository.searchByNameOrDescriptionOrBrand(query.toLowerCase(), pageable);
     }
     
     public Optional<Electronic> getElectronicById(String id) {
