@@ -11,7 +11,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "cleaneddata02_electronics")
+@Table(name = "electronics")
 public class Electronic {
     @Id
     @Column(name = "id")
