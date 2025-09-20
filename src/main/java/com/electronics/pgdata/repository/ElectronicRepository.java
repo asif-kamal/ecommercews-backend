@@ -1,5 +1,6 @@
 package com.electronics.pgdata.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -14,25 +15,92 @@ import com.electronics.pgdata.model.Electronic;
 @Repository
 public interface ElectronicRepository extends JpaRepository<Electronic, String> {
 
+    // Updated search query to match simplified entity fields
     @Query("SELECT e FROM Electronic e WHERE " +
-           "LOWER(e.name) LIKE %:query% OR " +
-           "LOWER(e.brand) LIKE %:query% OR " +
-           "LOWER(e.manufacturer) LIKE %:query% OR " +
-           "LOWER(e.primaryCategories) LIKE %:query% OR " +
-           "LOWER(e.categories) LIKE %:query%")
+            "LOWER(e.name) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+            "LOWER(e.brand) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+            "LOWER(e.category) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+            "LOWER(e.description) LIKE LOWER(CONCAT('%', :query, '%'))")
     Page<Electronic> searchByNameOrDescriptionOrBrand(@Param("query") String query, Pageable pageable);
-    @Query(value = "SELECT * FROM electronic ORDER BY RANDOM() LIMIT :limit",
-           nativeQuery = true)
+
+    // Random electronics query
+    @Query(value = "SELECT * FROM electronics ORDER BY RANDOM() LIMIT :limit",
+            nativeQuery = true)
     List<Electronic> findRandomElectronics(@Param("limit") int limit);
-    Page<Electronic> findByBrand(String brand, Pageable pageable);
-    List<Electronic> findByPricesAmountMaxLessThan(Double maxPrice);
-    
-    @Query("SELECT e FROM Electronic e WHERE LOWER(e.primaryCategories) LIKE LOWER(CONCAT('%', :category, '%'))")
+
+    // Find by brand
+    Page<Electronic> findByBrandIgnoreCase(String brand, Pageable pageable);
+
+    // Find by brand (simple method)
+    List<Electronic> findByBrandIgnoreCase(String brand);
+
+    // Price-based queries using BigDecimal
+    List<Electronic> findByPriceLessThan(BigDecimal maxPrice);
+
+    List<Electronic> findByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice);
+
+    List<Electronic> findByPriceGreaterThan(BigDecimal minPrice);
+
+    // Category-based queries
+    @Query("SELECT e FROM Electronic e WHERE LOWER(e.category) LIKE LOWER(CONCAT('%', :category, '%'))")
     List<Electronic> findByCategory(@Param("category") String category);
 
-    // Alternative method using primaryCategories field
-    List<Electronic> findByPrimaryCategories(String primaryCategories);
-    
+    @Query("SELECT e FROM Electronic e WHERE LOWER(e.category) LIKE LOWER(CONCAT('%', :category, '%'))")
+    Page<Electronic> findByCategoryPaged(@Param("category") String category, Pageable pageable);
+
+    // Exact category match
+    List<Electronic> findByCategoryIgnoreCase(String category);
+
+    // Stock availability queries
+    List<Electronic> findByInStock(Boolean inStock);
+
+    Page<Electronic> findByInStock(Boolean inStock, Pageable pageable);
+
+    // Available products with price filter
+    List<Electronic> findByInStockTrueAndPriceLessThan(BigDecimal maxPrice);
+
+    // Find by brand and category
+    List<Electronic> findByBrandIgnoreCaseAndCategoryIgnoreCase(String brand, String category);
+
+    // Count queries
+    long countByBrandIgnoreCase(String brand);
+
+    long countByCategoryIgnoreCase(String category);
+
+    long countByInStock(Boolean inStock);
+
+    // Advanced search with multiple filters
+    @Query("SELECT e FROM Electronic e WHERE " +
+            "(:brand IS NULL OR LOWER(e.brand) = LOWER(:brand)) AND " +
+            "(:category IS NULL OR LOWER(e.category) LIKE LOWER(CONCAT('%', :category, '%'))) AND " +
+            "(:minPrice IS NULL OR e.price >= :minPrice) AND " +
+            "(:maxPrice IS NULL OR e.price <= :maxPrice) AND " +
+            "(:inStock IS NULL OR e.inStock = :inStock)")
+    Page<Electronic> findWithFilters(@Param("brand") String brand,
+                                     @Param("category") String category,
+                                     @Param("minPrice") BigDecimal minPrice,
+                                     @Param("maxPrice") BigDecimal maxPrice,
+                                     @Param("inStock") Boolean inStock,
+                                     Pageable pageable);
+
+    // Get all distinct brands
+    @Query("SELECT DISTINCT e.brand FROM Electronic e WHERE e.brand IS NOT NULL ORDER BY e.brand")
+    List<String> findAllDistinctBrands();
+
+    // Get all distinct categories
+    @Query("SELECT DISTINCT e.category FROM Electronic e WHERE e.category IS NOT NULL ORDER BY e.category")
+    List<String> findAllDistinctCategories();
+
+    // Find top N most expensive products
+    @Query("SELECT e FROM Electronic e WHERE e.price IS NOT NULL ORDER BY e.price DESC")
+    List<Electronic> findTopByOrderByPriceDesc(Pageable pageable);
+
+    // Find top N cheapest products
+    @Query("SELECT e FROM Electronic e WHERE e.price IS NOT NULL ORDER BY e.price ASC")
+    List<Electronic> findTopByOrderByPriceAsc(Pageable pageable);
+
     @Override
     Page<Electronic> findAll(Pageable pageable);
+
+    Page<Electronic> findByBrand(String brand, Pageable pageable);
 }
