@@ -21,7 +21,7 @@ public interface ElectronicRepository extends JpaRepository<Electronic, String> 
            "LOWER(e.primaryCategories) LIKE %:query% OR " +
            "LOWER(e.categories) LIKE %:query%")
     Page<Electronic> searchByNameOrDescriptionOrBrand(@Param("query") String query, Pageable pageable);
-    @Query(value = "SELECT * FROM cleaneddata02_electronics ORDER BY RANDOM() LIMIT :limit", 
+    @Query(value = "SELECT * FROM electronic ORDER BY RANDOM() LIMIT :limit",
            nativeQuery = true)
     List<Electronic> findRandomElectronics(@Param("limit") int limit);
     Page<Electronic> findByBrand(String brand, Pageable pageable);
