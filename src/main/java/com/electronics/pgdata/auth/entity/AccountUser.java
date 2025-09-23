@@ -45,6 +45,13 @@ public class AccountUser implements UserDetails {
 
     private String verificationCode;
 
+    private Boolean enabled = false;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE,
+            CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "AUTH_USER_AUTHORITIES", joinColumns = @JoinColumn(referencedColumnName = "uuid"),
+            inverseJoinColumns = @JoinColumn(referencedColumnName = "uuid"))
+    private List<Authority> authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
