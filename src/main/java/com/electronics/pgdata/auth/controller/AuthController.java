@@ -2,7 +2,10 @@ package com.electronics.pgdata.auth.controller;
 
 import com.electronics.pgdata.auth.dto.AccountUserToken;
 import com.electronics.pgdata.auth.dto.LoginRequest;
+import com.electronics.pgdata.auth.dto.RegistrationRequest;
+import com.electronics.pgdata.auth.dto.RegistrationResponse;
 import com.electronics.pgdata.auth.entity.AccountUser;
+import com.electronics.pgdata.service.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +25,9 @@ public class AuthController {
     @Autowired
     AuthenticationManager authenticationManager;
 
+    @Autowired
+    RegistrationService registrationService;
+
     @PostMapping("/login")
     public ResponseEntity<AccountUserToken> login(@RequestBody LoginRequest loginRequest){
         try {
@@ -32,7 +38,7 @@ public class AuthController {
             if (authenticationResponse.isAuthenticated()) {
                 AccountUser accountUser = (AccountUser) authenticationResponse.getPrincipal();
                 if (accountUser.isEnabled()) {
-                    String token = "";
+                    String token = null;
                     AccountUserToken accountUserToken = AccountUserToken.builder().token(token).build();
                     return ResponseEntity.ok(accountUserToken);
                 }
@@ -41,5 +47,10 @@ public class AuthController {
             e.printStackTrace();
         }
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<RegistrationResponse> register(@RequestBody RegistrationRequest registerRequest){
+        RegistrationResponse registrationResponse = registrationService.createAccountUser(registerRequest);
     }
 }
