@@ -3,6 +3,7 @@ package com.electronics.pgdata.service;
 import com.electronics.pgdata.auth.dto.RegistrationRequest;
 import com.electronics.pgdata.auth.dto.RegistrationResponse;
 import com.electronics.pgdata.auth.entity.AccountUser;
+import com.electronics.pgdata.auth.helper.VerificationCodeGenerator;
 import com.electronics.pgdata.auth.repository.AccountUserDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,7 +36,10 @@ public class RegistrationService {
             accountUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
             accountUser.setProvider("manual");
 
-            String code = "";
-        } catch ()
+            String code = VerificationCodeGenerator.generateVerificationCode();
+            accountUser.setVerificationCode(code);
+        } catch (Exception ex) {
+
+        }
     }
 }
