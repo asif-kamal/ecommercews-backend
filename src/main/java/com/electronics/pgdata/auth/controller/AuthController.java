@@ -52,5 +52,6 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<RegistrationResponse> register(@RequestBody RegistrationRequest registerRequest){
         RegistrationResponse registrationResponse = registrationService.createAccountUser(registerRequest);
+        return null;
     }
 }

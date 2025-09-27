@@ -41,5 +41,6 @@ public class RegistrationService {
         } catch (Exception ex) {
 
         }
+        return null;
     }
 }
