@@ -20,4 +20,9 @@ public class AuthorityService {
         authorities.add(authority);
         return authorities;
     }
+
+    public Authority createAuthority(String roleCode, String description) {
+        Authority authority = Authority.builder().roleCode(roleCode).roleDescription(description).build();
+        return authorityRepository.save(authority);
+    }
 }
