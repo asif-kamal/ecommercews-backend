@@ -9,6 +9,7 @@ import com.electronics.pgdata.repository.AuthorityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ServerErrorException;
 
 @Service
 public class RegistrationService {
@@ -52,8 +53,8 @@ public class RegistrationService {
                     .code(200)
                     .message("User registered successfully. Please check your email for verification.")
                     .build();
-        } catch (Exception ex) {
-
+        } catch (ServerErrorException ex) {
+            throw new ServerErrorException(ex.getMessage(), ex.getCause());
         }
         return null;
     }
