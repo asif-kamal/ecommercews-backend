@@ -5,6 +5,7 @@ import com.electronics.pgdata.auth.dto.RegistrationResponse;
 import com.electronics.pgdata.auth.entity.AccountUser;
 import com.electronics.pgdata.auth.helper.VerificationCodeGenerator;
 import com.electronics.pgdata.auth.repository.AccountUserDetailRepository;
+import com.electronics.pgdata.repository.AuthorityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,9 @@ public class RegistrationService {
 
     @Autowired
     private AccountUserDetailRepository accountUserDetailRepository;
+
+    @Autowired
+    private AuthorityService authorityService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -38,6 +42,9 @@ public class RegistrationService {
 
             String code = VerificationCodeGenerator.generateVerificationCode();
             accountUser.setVerificationCode(code);
+
+            accountUser.setAuthorities(authorityService.getAccountUserAuthorities());
+            accountUserDetailRepository.save(accountUser);
         } catch (Exception ex) {
 
         }
