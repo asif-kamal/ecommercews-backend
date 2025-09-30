@@ -23,12 +23,15 @@ public class RegistrationService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    EmailService emailService;
+
     public RegistrationResponse createAccountUser(RegistrationRequest registerRequest) {
 
         AccountUser existingUser = accountUserDetailRepository.findByEmail(registerRequest.getEmail());
 
         if (existingUser != null) {
-            return RegistrationResponse.builder().code("409")
+            return RegistrationResponse.builder().code(409)
                     .message("User already exists with this email: " + registerRequest.getEmail()).build();
         }
 
@@ -46,6 +49,7 @@ public class RegistrationService {
 
             accountUser.setAuthorities(authorityService.getAccountUserAuthorities());
             accountUserDetailRepository.save(accountUser);
+            emailService.sendEmail(accountUser);
 
             // Send verification email logic can be added here
 
@@ -56,6 +60,5 @@ public class RegistrationService {
         } catch (ServerErrorException ex) {
             throw new ServerErrorException(ex.getMessage(), ex.getCause());
         }
-        return null;
     }
 }
