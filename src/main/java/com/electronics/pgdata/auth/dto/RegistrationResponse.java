@@ -16,6 +16,6 @@ public class RegistrationResponse {
     private String phoneNumber;
     private String email;
     private CharSequence password;
-    private String code;
+    private int code;
     private String message;
 }

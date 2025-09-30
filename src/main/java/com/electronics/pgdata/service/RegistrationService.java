@@ -45,6 +45,13 @@ public class RegistrationService {
 
             accountUser.setAuthorities(authorityService.getAccountUserAuthorities());
             accountUserDetailRepository.save(accountUser);
+
+            // Send verification email logic can be added here
+
+            return RegistrationResponse.builder()
+                    .code(200)
+                    .message("User registered successfully. Please check your email for verification.")
+                    .build();
         } catch (Exception ex) {
 
         }
