@@ -52,6 +52,9 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<RegistrationResponse> register(@RequestBody RegistrationRequest registerRequest){
         RegistrationResponse registrationResponse = registrationService.createAccountUser(registerRequest);
-        return null;
+        return new ResponseEntity<>(registrationResponse, registrationResponse.getCode() == 200 ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
+
+    @PostMapping("/verify")
+
 }
