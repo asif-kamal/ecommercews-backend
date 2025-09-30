@@ -1,10 +1,11 @@
 package com.electronics.pgdata.service;
 
 import com.electronics.pgdata.auth.entity.AccountUser;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,12 +28,15 @@ public class EmailService {
 
         try {
 
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setFrom(sender);
-            mailMessage.setTo(accountUser.getEmail());
-            mailMessage.setText(mailContent);
-            mailMessage.setSubject(subject);
-            javaMailSender.send(mailMessage);
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+
+            helper.setFrom(sender);
+            helper.setTo(accountUser.getEmail());
+            helper.setSubject(subject);
+            helper.setText(mailContent, true); // true enables HTML content
+
+            javaMailSender.send(mimeMessage);
         } catch (Exception e) {
             return "Error while sending mail ..";
 
