@@ -41,9 +41,12 @@ public class AuthController {
                     loginRequest.getPassword());
             Authentication authenticationResponse = this.authenticationManager.authenticate(authentication);
 
+
             if (authenticationResponse.isAuthenticated()) {
                 AccountUser accountUser = (AccountUser) authenticationResponse.getPrincipal();
                 if (accountUser.isEnabled()) {
+
+
                     String token = null;
                     AccountUserToken accountUserToken = AccountUserToken.builder().token(token).build();
                     return ResponseEntity.ok(accountUserToken);

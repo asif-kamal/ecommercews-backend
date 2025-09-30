@@ -21,7 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class WebSecurityConfig {
 
     @Autowired
-    private CustomAccountUserDetailService userDetailsService;
+    private UserDetailsService userDetailsService;
 
     private final String[] AUTH_WHITELIST = {
             "/api/auth/**"
