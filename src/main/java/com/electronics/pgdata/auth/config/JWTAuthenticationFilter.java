@@ -1,6 +1,5 @@
 package com.electronics.pgdata.auth.config;
 
-import com.electronics.pgdata.auth.service.CustomAccountUserDetailService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,7 +8,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -37,7 +35,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         try {
             String authToken = jwtTokenHelper.getToken(request);
             if (null != authToken) {
-                String username = jwtTokenHelper.getUsernemeFromToken(authToken);
+                String username = jwtTokenHelper.getUsernameFromToken(authToken);
                 if (null != username) {
                     UserDetails userDetails = userDetailService.loadUserByUsername(username);
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
