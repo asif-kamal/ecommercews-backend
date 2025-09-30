@@ -48,8 +48,8 @@ public class RegistrationService {
             accountUser.setVerificationCode(code);
 
             accountUser.setAuthorities(authorityService.getAccountUserAuthorities());
-            accountUserDetailRepository.save(accountUser);
-            emailService.sendEmail(accountUser);
+            AccountUser savedAccountUser = accountUserDetailRepository.save(accountUser);
+            emailService.sendEmail(savedAccountUser);
 
             // Send verification email logic can be added here
 
