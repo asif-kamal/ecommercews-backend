@@ -69,6 +69,8 @@ public class AuthController {
 
         if (accountUser != null && accountUser.getVerificationCode().equals(code)) {
             registrationService.verifyAccount(username);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }
