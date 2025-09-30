@@ -61,4 +61,10 @@ public class RegistrationService {
             throw new ServerErrorException(ex.getMessage(), ex.getCause());
         }
     }
+
+    public void verifyAccount(String username) {
+        AccountUser accountUser = accountUserDetailRepository.findByEmail(username);
+        accountUser.setEnabled(true);
+        accountUserDetailRepository.save(accountUser);
+    }
 }
