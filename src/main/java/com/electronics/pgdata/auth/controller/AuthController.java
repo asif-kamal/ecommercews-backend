@@ -1,5 +1,6 @@
 package com.electronics.pgdata.auth.controller;
 
+import com.electronics.pgdata.auth.config.JWTTokenHelper;
 import com.electronics.pgdata.auth.dto.AccountUserToken;
 import com.electronics.pgdata.auth.dto.LoginRequest;
 import com.electronics.pgdata.auth.dto.RegistrationRequest;
@@ -34,6 +35,9 @@ public class AuthController {
     @Autowired
     UserDetailsService userDetailsService;
 
+    @Autowired
+    JWTTokenHelper jwtTokenHelper;
+
     @PostMapping("/login")
     public ResponseEntity<AccountUserToken> login(@RequestBody LoginRequest loginRequest){
         try {
@@ -47,7 +51,7 @@ public class AuthController {
                 if (accountUser.isEnabled()) {
 
 
-                    String token = null;
+                    String token = jwtTokenHelper.generateToken(accountUser.getEmail());
                     AccountUserToken accountUserToken = AccountUserToken.builder().token(token).build();
                     return ResponseEntity.ok(accountUserToken);
                 }
