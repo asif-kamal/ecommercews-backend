@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -30,7 +29,7 @@ public class JWTTokenHelper {
                 .issuer(APP_NAME)
                 .subject(username)
                 .issuedAt(Calendar.getInstance().getTime())
-                .expiration(getExpirationDate())
+                .expiration(getExpirationDate(token))
                 .signWith(getSigningKey())
                 .compact();
 
@@ -41,8 +40,15 @@ public class JWTTokenHelper {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    private Date getExpirationDate() {
-        return new Date(System.currentTimeMillis() + EXPIRES_IN * 1000L);
+    private Date getExpirationDate(String token) {
+        Date expirationDate;
+        try {
+            final Claims claims = this.getAllClaimsFromToken(token);
+            expirationDate = claims.getExpiration();
+        } catch (Exception e) {
+            expirationDate = null;
+        }
+        return expirationDate;
     }
 
     public String getToken(HttpServletRequest request) {
@@ -59,6 +65,8 @@ public class JWTTokenHelper {
     }
 
     private boolean isTokenExpired(String token) {
+        Date expiration = getExpirationDate(token);
+        return expiration.before(new Date());
     }
 
     private String getAuthHeaderFromRequest(HttpServletRequest request) {
