@@ -17,7 +17,9 @@ public class AuthorityService {
     public List<Authority> getAccountUserAuthorities() {
         List<Authority> authorities = new ArrayList<>();
         Authority authority = authorityRepository.findByRoleCode("ROLE_USER");
-        authorities.add(authority);
+        if (authority != null) {
+            authorities.add(authority);
+        }
         return authorities;
     }
 

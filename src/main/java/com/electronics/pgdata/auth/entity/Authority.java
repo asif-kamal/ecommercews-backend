@@ -18,7 +18,7 @@ import java.util.UUID;
 public class Authority implements GrantedAuthority {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID authorityUuid;
 
     private String roleCode;
