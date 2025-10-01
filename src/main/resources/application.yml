@@ -26,3 +26,8 @@ spring:
           auth: true
           starttls:
             enable: true
+jwt:
+  auth:
+    app: authapp
+    secret_key: ${JWT_KEY}
+    expires_in: 3600
