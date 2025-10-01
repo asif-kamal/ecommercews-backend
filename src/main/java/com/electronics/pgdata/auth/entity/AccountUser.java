@@ -23,7 +23,7 @@ import java.util.UUID;
 public class AccountUser implements UserDetails {
     @Id
     @GeneratedValue
-    private UUID uuid;
+    private UUID id;
 
     private String firstName;
 
@@ -39,7 +39,7 @@ public class AccountUser implements UserDetails {
     @Column(unique = true, nullable = false)
     private String email;
 
-    private String phone;
+    private String phoneNumber;
 
     private String provider;
 
