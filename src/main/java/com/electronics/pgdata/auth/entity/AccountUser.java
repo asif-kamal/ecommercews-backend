@@ -39,7 +39,7 @@ public class AccountUser implements UserDetails {
     @Column(unique = true, nullable = false)
     private String email;
 
-    private String phoneNumber;
+    private String phone;
 
     private String provider;
 

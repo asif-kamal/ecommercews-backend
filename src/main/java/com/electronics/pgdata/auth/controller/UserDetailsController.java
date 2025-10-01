@@ -33,7 +33,7 @@ public class UserDetailsController {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
-                .phoneNumber(user.getPhoneNumber())
+                .phone(user.getPhone())
                 .authorities(user.getAuthorities().toArray())
                 .build();
         return new ResponseEntity<>(userDetailsDTO, HttpStatus.OK);
