@@ -39,6 +39,7 @@ public class JWTTokenHelper {
     }
 
     private Date getExpirationDate() {
+        return new Date(System.currentTimeMillis() + EXPIRES_IN * 1000L);
     }
 
     public String getToken(HttpServletRequest request) {
