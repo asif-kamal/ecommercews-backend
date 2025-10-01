@@ -23,7 +23,7 @@ import java.util.UUID;
 public class AccountUser implements UserDetails {
     @Id
     @GeneratedValue
-    private UUID uuid;
+    private UUID accountUserUuid;
 
     private String firstName;
 
@@ -49,8 +49,9 @@ public class AccountUser implements UserDetails {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinTable(name = "AUTH_USER_AUTHORITIES", joinColumns = @JoinColumn(referencedColumnName = "uuid"),
-            inverseJoinColumns = @JoinColumn(referencedColumnName = "uuid"))
+    @JoinTable(name = "AUTH_USER_AUTHORITIES", joinColumns = @JoinColumn(name = "account_user_uuid",
+            referencedColumnName = "accountUserUuid"),
+            inverseJoinColumns = @JoinColumn(name = "authority_uuid", referencedColumnName = "authorityUuid"))
     private List<Authority> authorities;
 
     @Override

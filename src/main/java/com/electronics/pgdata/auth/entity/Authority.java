@@ -19,7 +19,7 @@ public class Authority implements GrantedAuthority {
 
     @Id
     @GeneratedValue
-    private UUID uuid;
+    private UUID authorityUuid;
 
     private String roleCode;
 
