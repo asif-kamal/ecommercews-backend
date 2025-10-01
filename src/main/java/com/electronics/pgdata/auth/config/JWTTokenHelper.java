@@ -1,8 +1,13 @@
 package com.electronics.pgdata.auth.config;
 
+import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.security.Key;
+import java.util.Calendar;
+import java.util.Date;
 
 @Component
 public class JWTTokenHelper {
@@ -14,6 +19,23 @@ public class JWTTokenHelper {
 
     @Value("${jwt.auth.expires_in}")
     private int EXPIRES_IN;
+
+    public String generateToken(String username) {
+        return Jwts.builder()
+                .issuer(APP_NAME)
+                .subject(username)
+                .issuedAt(Calendar.getInstance().getTime())
+                .expiration(getExpirationDate())
+                .signWith(getSigningKey())
+                .compact();
+
+    }
+
+    private Key getSigningKey() {
+    }
+
+    private Date getExpirationDate() {
+    }
 
     public String getToken(HttpServletRequest request) {
         String authHeader = getAuthHeaderFromRequest(request);
