@@ -14,9 +14,9 @@ import com.electronics.pgdata.repository.ElectronicRepository;
 
 @Service
 public class ElectronicService {
-    
+
     private final ElectronicRepository repository;
-    
+
     public ElectronicService(ElectronicRepository repository) {
         this.repository = repository;
     }
@@ -25,12 +25,23 @@ public class ElectronicService {
         List<Electronic> randomItems = repository.findRandomElectronics(size);
         return new PageImpl<>(randomItems, PageRequest.of(page, size), repository.count());
     }
-    
+
     public Page<Electronic> searchElectronics(String query, int page, int size) {
+        // Add null/empty check
+        if (query == null || query.trim().isEmpty()) {
+            return getAllElectronics(page, size);
+        }
+
+        System.out.println("Searching for: " + query + " on page " + page);
+
         Pageable pageable = PageRequest.of(page, size);
-        return repository.searchByNameOrDescriptionOrBrand(query.toLowerCase(), pageable);
+        Page<Electronic> results = repository.searchByNameOrDescriptionOrBrand(query.trim(), pageable);
+
+        System.out.println("Found " + results.getTotalElements() + " results");
+
+        return results;
     }
-    
+
     public Optional<Electronic> getElectronicById(String id) {
         return repository.findById(id);
     }
@@ -43,7 +54,7 @@ public class ElectronicService {
         Pageable pageable = PageRequest.of(page, size);
         return repository.findAll(pageable);
     }
-    
+
     public Page<Electronic> getByBrand(String brand, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return repository.findByBrand(brand, pageable);

@@ -15,13 +15,17 @@ import com.electronics.pgdata.model.Electronic;
 @Repository
 public interface ElectronicRepository extends JpaRepository<Electronic, String> {
 
-    // Updated search query to match simplified entity fields
+    // Fixed search query - make sure it matches your entity fields exactly
     @Query("SELECT e FROM Electronic e WHERE " +
             "LOWER(e.name) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
             "LOWER(e.brand) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
             "LOWER(e.category) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
             "LOWER(e.description) LIKE LOWER(CONCAT('%', :query, '%'))")
     Page<Electronic> searchByNameOrDescriptionOrBrand(@Param("query") String query, Pageable pageable);
+
+    // Alternative simple search method for testing
+    @Query("SELECT e FROM Electronic e WHERE LOWER(e.name) LIKE LOWER(CONCAT('%', :query, '%'))")
+    Page<Electronic> searchByNameOnly(@Param("query") String query, Pageable pageable);
 
     // Random electronics query
     @Query(value = "SELECT * FROM electronics ORDER BY RANDOM() LIMIT :limit",
@@ -31,7 +35,6 @@ public interface ElectronicRepository extends JpaRepository<Electronic, String> 
     // Find by brand
     Page<Electronic> findByBrandIgnoreCase(String brand, Pageable pageable);
 
-    // Find by brand (simple method)
     List<Electronic> findByBrandIgnoreCase(String brand);
 
     // Price-based queries using BigDecimal
@@ -48,7 +51,6 @@ public interface ElectronicRepository extends JpaRepository<Electronic, String> 
     @Query("SELECT e FROM Electronic e WHERE LOWER(e.category) LIKE LOWER(CONCAT('%', :category, '%'))")
     Page<Electronic> findByCategoryPaged(@Param("category") String category, Pageable pageable);
 
-    // Exact category match
     List<Electronic> findByCategoryIgnoreCase(String category);
 
     // Stock availability queries
@@ -56,7 +58,6 @@ public interface ElectronicRepository extends JpaRepository<Electronic, String> 
 
     Page<Electronic> findByInStock(Boolean inStock, Pageable pageable);
 
-    // Available products with price filter
     List<Electronic> findByInStockTrueAndPriceLessThan(BigDecimal maxPrice);
 
     // Find by brand and category
@@ -83,19 +84,15 @@ public interface ElectronicRepository extends JpaRepository<Electronic, String> 
                                      @Param("inStock") Boolean inStock,
                                      Pageable pageable);
 
-    // Get all distinct brands
     @Query("SELECT DISTINCT e.brand FROM Electronic e WHERE e.brand IS NOT NULL ORDER BY e.brand")
     List<String> findAllDistinctBrands();
 
-    // Get all distinct categories
     @Query("SELECT DISTINCT e.category FROM Electronic e WHERE e.category IS NOT NULL ORDER BY e.category")
     List<String> findAllDistinctCategories();
 
-    // Find top N most expensive products
     @Query("SELECT e FROM Electronic e WHERE e.price IS NOT NULL ORDER BY e.price DESC")
     List<Electronic> findTopByOrderByPriceDesc(Pageable pageable);
 
-    // Find top N cheapest products
     @Query("SELECT e FROM Electronic e WHERE e.price IS NOT NULL ORDER BY e.price ASC")
     List<Electronic> findTopByOrderByPriceAsc(Pageable pageable);
 

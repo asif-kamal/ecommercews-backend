@@ -28,7 +28,8 @@ public class WebSecurityConfig {
     private JWTTokenHelper jwtTokenHelper;
 
     private final String[] AUTH_WHITELIST = {
-            "/api/auth/**"
+            "/api/auth/**",
+            "/api/electronics"
     };
 
     @Bean
