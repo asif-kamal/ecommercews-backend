@@ -1,5 +1,6 @@
 package com.electronics.pgdata.auth.config;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -47,7 +48,7 @@ public class JWTTokenHelper {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
         }
-        return null;
+        return authHeader;
     }
 
     private String getAuthHeaderFromRequest(HttpServletRequest request) {
@@ -55,6 +56,17 @@ public class JWTTokenHelper {
     }
 
     public String getUsernameFromToken(String authToken) {
-        return null;
+
+        String username;
+        try {
+            final Claims claims = this.getAllClaimsFromToken(authToken);
+            username = claims.getSubject();
+        } catch (Exception e) {
+            username = null;
+        }
+        return username;
+    }
+
+    private Claims getAllClaimsFromToken(String authToken) {
     }
 }
