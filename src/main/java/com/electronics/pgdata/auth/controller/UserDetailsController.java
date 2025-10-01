@@ -29,7 +29,7 @@ public class UserDetailsController {
         }
 
         UserDetailsDTO userDetailsDTO = UserDetailsDTO.builder()
-                .id(user.getId())
+                .uuid(user.getUuid())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
