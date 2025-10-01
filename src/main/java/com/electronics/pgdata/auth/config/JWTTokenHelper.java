@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Calendar;
 import java.util.Date;
@@ -34,7 +35,7 @@ public class JWTTokenHelper {
 
     }
 
-    private Key getSigningKey() {
+    private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
@@ -68,5 +69,17 @@ public class JWTTokenHelper {
     }
 
     private Claims getAllClaimsFromToken(String authToken) {
+        Claims claims;
+        try {
+            claims = Jwts.parser()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(authToken)
+                    .getPayload();
+
+        } catch (Exception e) {
+            claims = null;
+        }
+        return claims;
     }
 }
