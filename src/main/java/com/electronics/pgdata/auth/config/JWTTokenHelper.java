@@ -29,10 +29,14 @@ public class JWTTokenHelper {
                 .issuer(APP_NAME)
                 .subject(username)
                 .issuedAt(Calendar.getInstance().getTime())
-                .expiration(getExpirationDate(token))
+                .expiration(generateExpirationDate())
                 .signWith(getSigningKey())
                 .compact();
 
+    }
+
+    private Date generateExpirationDate() {
+        return new Date(new Date().getTime() + EXPIRES_IN * 1000L);
     }
 
     private SecretKey getSigningKey() {
