@@ -42,6 +42,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/electronics/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/user/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/user/**").authenticated()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JWTAuthenticationFilter(userDetailsService, jwtTokenHelper),
                         UsernamePasswordAuthenticationFilter.class);
