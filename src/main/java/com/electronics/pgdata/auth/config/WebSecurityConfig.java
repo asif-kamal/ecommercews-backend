@@ -41,17 +41,20 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/oauth2/**").permitAll()
-                        .requestMatchers("/login/oauth2/code/**").permitAll() // Add this
+                        .requestMatchers("/api/oauth2/**").permitAll()
+                        .requestMatchers("/api/login/oauth2/code/**").permitAll() // Add /api prefix
                         .requestMatchers(HttpMethod.GET, "/api/electronics/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/user/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/user/**").authenticated()
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/oauth2/authorization/google") // Explicit login page
-                        .defaultSuccessUrl("/oauth2/success", true) // Force redirect to success
-                        .failureUrl("/oauth2/failure")
-                        .permitAll()
+                        .loginProcessingUrl("/api/login/oauth2/code/*") // Add this line
+                        .successHandler(oauth2SuccessHandler)
+                        .failureHandler((request, response, exception) -> {
+                            System.err.println("OAuth2 authentication failed: " + exception.getMessage());
+                            exception.printStackTrace();
+                            response.sendRedirect("http://localhost:3000/oauth2/callback?error=auth_failed");
+                        })
                 )
                 .addFilterBefore(new JWTAuthenticationFilter(userDetailsService, jwtTokenHelper),
                         UsernamePasswordAuthenticationFilter.class);
