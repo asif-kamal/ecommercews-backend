@@ -40,13 +40,19 @@ public class WebSecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**").permitAll()
-                        .requestMatchers("/api/auth/**", "/oauth2/success").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/oauth2/**").permitAll()
+                        .requestMatchers("/login/oauth2/code/**").permitAll() // Add this
                         .requestMatchers(HttpMethod.GET, "/api/electronics/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/user/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/user/**").authenticated()
                         .anyRequest().authenticated())
-                .oauth2Login((oauth2Login) -> oauth2Login.defaultSuccessUrl("/oauth2/success") )
-                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/oauth2/authorization/google") // Explicit login page
+                        .defaultSuccessUrl("/oauth2/success", true) // Force redirect to success
+                        .failureUrl("/oauth2/failure")
+                        .permitAll()
+                )
                 .addFilterBefore(new JWTAuthenticationFilter(userDetailsService, jwtTokenHelper),
                         UsernamePasswordAuthenticationFilter.class);
         return http.build();
