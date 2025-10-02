@@ -30,13 +30,13 @@ public class UserDetailsController {
 
         try {
             String username = principal.getName();
-            Optional<AccountUser> userOptional = Optional.ofNullable(accountUserRepository.findByEmail(username));
+            System.out.println("Getting profile for username: " + username);
 
-            if (userOptional.isEmpty()) {
+            AccountUser user = accountUserRepository.findByEmail(username);
+            if (user == null) {
+                System.out.println("User not found for email: " + username);
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-
-            AccountUser user = userOptional.get();
 
             UserDetailsDTO userDetailsDTO = UserDetailsDTO.builder()
                     .uuid(user.getAccountUserUuid())
@@ -44,7 +44,7 @@ public class UserDetailsController {
                     .lastName(user.getLastName())
                     .email(user.getEmail())
                     .phone(user.getPhone())
-                    .authorities(user.getAuthorities().toArray())
+                    .authorities(user.getAuthorities() != null ? user.getAuthorities().toArray() : new Object[0])
                     .build();
 
             return new ResponseEntity<>(userDetailsDTO, HttpStatus.OK);
@@ -56,7 +56,6 @@ public class UserDetailsController {
         }
     }
 
-
     @PutMapping("/profile")
     public ResponseEntity<UserDetailsDTO> updateUserProfile(@RequestBody UserDetailsDTO userDetailsDTO, Principal principal) {
         if (principal == null) {
@@ -64,34 +63,34 @@ public class UserDetailsController {
         }
 
         try {
-            // Get the username from the principal
             String username = principal.getName();
+            System.out.println("Updating profile for username: " + username);
+            System.out.println("Update data: " + userDetailsDTO);
 
-            // Find the user directly from repository instead of UserDetailsService
-            Optional<AccountUser> userOptional = accountUserRepository.findByEmail(username);
-
-            if (userOptional.isEmpty()) {
+            AccountUser user = accountUserRepository.findByEmail(username);
+            if (user == null) {
+                System.out.println("User not found for email: " + username);
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
-            AccountUser user = userOptional.get();
-
             // Update user fields - add null checks for safety
-            if (userDetailsDTO.getFirstName() != null) {
-                user.setFirstName(userDetailsDTO.getFirstName());
+            if (userDetailsDTO.getFirstName() != null && !userDetailsDTO.getFirstName().trim().isEmpty()) {
+                user.setFirstName(userDetailsDTO.getFirstName().trim());
             }
-            if (userDetailsDTO.getLastName() != null) {
-                user.setLastName(userDetailsDTO.getLastName());
+            if (userDetailsDTO.getLastName() != null && !userDetailsDTO.getLastName().trim().isEmpty()) {
+                user.setLastName(userDetailsDTO.getLastName().trim());
             }
-            if (userDetailsDTO.getEmail() != null) {
-                user.setEmail(userDetailsDTO.getEmail());
-            }
+            // Don't update email to avoid conflicts with authentication
             if (userDetailsDTO.getPhone() != null) {
-                user.setPhone(userDetailsDTO.getPhone());
+                user.setPhone(userDetailsDTO.getPhone().trim());
             }
+
+            System.out.println("Saving user: " + user.getEmail());
 
             // Save updated user
             AccountUser updatedUser = accountUserRepository.save(user);
+
+            System.out.println("User saved successfully");
 
             // Return updated user data
             UserDetailsDTO responseDTO = UserDetailsDTO.builder()
@@ -100,17 +99,15 @@ public class UserDetailsController {
                     .lastName(updatedUser.getLastName())
                     .email(updatedUser.getEmail())
                     .phone(updatedUser.getPhone())
-                    .authorities(updatedUser.getAuthorities().toArray())
+                    .authorities(updatedUser.getAuthorities() != null ? updatedUser.getAuthorities().toArray() : new Object[0])
                     .build();
 
             return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 
         } catch (Exception e) {
-            // Log the actual error for debugging
             System.err.println("Error updating user profile: " + e.getMessage());
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }
