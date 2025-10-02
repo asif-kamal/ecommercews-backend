@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api/user")
 public class UserDetailsController {
 
