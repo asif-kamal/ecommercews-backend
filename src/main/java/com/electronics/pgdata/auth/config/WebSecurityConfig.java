@@ -1,5 +1,6 @@
 package com.electronics.pgdata.auth.config;
 
+import com.electronics.pgdata.auth.handler.OAuth2AuthenticationSuccessHandler;
 import com.electronics.pgdata.auth.service.CustomAccountUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +34,10 @@ public class WebSecurityConfig {
     @Autowired
     private JWTTokenHelper jwtTokenHelper;
 
+    // Add this line to inject the success handler
+    @Autowired
+    private OAuth2AuthenticationSuccessHandler oauth2SuccessHandler;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -41,15 +46,13 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/oauth2/**").permitAll()
-                        .requestMatchers("/api/login/oauth2/code/**").permitAll() // Add /api prefix
+                        .requestMatchers("/login/oauth2/code/**").permitAll() // Add this line
                         .requestMatchers(HttpMethod.GET, "/api/electronics/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/user/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/user/**").authenticated()
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
-                        .loginProcessingUrl("/api/login/oauth2/code/*") // Add this line
-                        .successHandler(oauth2SuccessHandler)
+                        .successHandler(oauth2SuccessHandler) // Use the success handler
                         .failureHandler((request, response, exception) -> {
                             System.err.println("OAuth2 authentication failed: " + exception.getMessage());
                             exception.printStackTrace();

@@ -17,7 +17,7 @@ import java.io.IOException;
 public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     @Autowired
-    private OAuth2Service oAuth2UserService;
+    private OAuth2Service oAuth2Service;
 
     @Autowired
     private JWTTokenHelper jwtTokenHelper;
@@ -34,10 +34,8 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         try {
             OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
             String email = oAuth2User.getAttribute("email");
-            String name = oAuth2User.getAttribute("name");
 
             System.out.println("OAuth2 User Email: " + email);
-            System.out.println("OAuth2 User Name: " + name);
             System.out.println("OAuth2 User Attributes: " + oAuth2User.getAttributes());
 
             if (email == null) {
@@ -46,14 +44,9 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
                 return;
             }
 
-            // Get or create user
-            AccountUser user = oAuth2UserService.getUser(email);
-            if (user == null) {
-                System.out.println("Creating new user for: " + email);
-                user = oAuth2UserService.createUser(oAuth2User, "google");
-            } else {
-                System.out.println("Found existing user: " + email);
-            }
+            // This handles both new and existing users
+            AccountUser user = oAuth2Service.createOrUpdateUser(oAuth2User, "google");
+            System.out.println("User processed: " + email);
 
             // Generate JWT token
             String token = jwtTokenHelper.generateToken(user.getUsername());
@@ -68,7 +61,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         } catch (Exception e) {
             System.err.println("OAuth2 success handler error: " + e.getMessage());
             e.printStackTrace();
-            response.sendRedirect("http://localhost:3000/oauth2/callback?error=handler_error&error_description=" + e.getMessage());
+            response.sendRedirect("http://localhost:3000/oauth2/callback?error=handler_error");
         }
     }
 }
