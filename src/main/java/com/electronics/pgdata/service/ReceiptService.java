@@ -31,24 +31,29 @@ public class ReceiptService {
             Receipt receipt = new Receipt();
             receipt.setReceiptUuid(UUID.randomUUID().toString());
             receipt.setUserEmail(receiptDTO.getUserEmail());
-            receipt.setTotalAmount(receiptDTO.getTotalAmount());
-            receipt.setTaxAmount(receiptDTO.getTaxAmount());
-            receipt.setSubtotal(receiptDTO.getSubtotal());
+            receipt.setTotalAmount(receiptDTO.getTotal());
+
+            // Calculate subtotal and tax (assuming 8.25% tax rate)
+            BigDecimal taxRate = new BigDecimal("0.0825");
+            BigDecimal subtotal = receiptDTO.getTotal().divide(BigDecimal.ONE.add(taxRate), 2, RoundingMode.HALF_UP);
+            BigDecimal taxAmount = receiptDTO.getTotal().subtract(subtotal);
+
+            receipt.setSubtotal(subtotal);
+            receipt.setTaxAmount(taxAmount);
 
             // Save receipt first to get ID
             receipt = receiptRepository.save(receipt);
-            final Receipt savedReceipt = receipt;
             System.out.println("Receipt saved with UUID: " + receipt.getReceiptUuid());
 
             // Create receipt items
             List<ReceiptItem> receiptItems = receiptDTO.getItems().stream()
                     .map(itemDTO -> new ReceiptItem(
-                            savedReceipt,
+                            receipt,
                             itemDTO.getProductName(),
-                            itemDTO.getProductUuid(),
+                            itemDTO.getProductId(),
                             itemDTO.getQuantity(),
-                            itemDTO.getUnitPrice(),
-                            itemDTO.getTotalPrice()
+                            itemDTO.getPrice(),
+                            itemDTO.getSubtotal()
                     ))
                     .collect(Collectors.toList());
 
@@ -71,6 +76,7 @@ public class ReceiptService {
             throw new RuntimeException("Failed to create receipt", e);
         }
     }
+
 
     public List<Receipt> getUserReceipts(String userEmail) {
         return receiptRepository.findByUserEmailOrderByCreatedOnDesc(userEmail);

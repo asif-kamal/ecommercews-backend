@@ -3,37 +3,37 @@ package com.electronics.pgdata.dto;
 import java.math.BigDecimal;
 
 public class ReceiptItemDTO {
+    private String productId;
     private String productName;
-    private String productUuid;
     private Integer quantity;
-    private BigDecimal unitPrice;
-    private BigDecimal totalPrice;
+    private BigDecimal price;
+    private BigDecimal subtotal;
 
     // Constructors
     public ReceiptItemDTO() {}
 
-    public ReceiptItemDTO(String productName, String productUuid,
-                          Integer quantity, BigDecimal unitPrice, BigDecimal totalPrice) {
+    public ReceiptItemDTO(String productId, String productName,
+                          Integer quantity, BigDecimal price, BigDecimal subtotal) {
+        this.productId = productId;
         this.productName = productName;
-        this.productUuid = productUuid;
         this.quantity = quantity;
-        this.unitPrice = unitPrice;
-        this.totalPrice = totalPrice;
+        this.price = price;
+        this.subtotal = subtotal;
     }
 
     // Getters and Setters
+    public String getProductId() { return productId; }
+    public void setProductId(String productId) { this.productId = productId; }
+
     public String getProductName() { return productName; }
     public void setProductName(String productName) { this.productName = productName; }
-
-    public String getProductUuid() { return productUuid; }
-    public void setProductUuid(String productUuid) { this.productUuid = productUuid; }
 
     public Integer getQuantity() { return quantity; }
     public void setQuantity(Integer quantity) { this.quantity = quantity; }
 
-    public BigDecimal getUnitPrice() { return unitPrice; }
-    public void setUnitPrice(BigDecimal unitPrice) { this.unitPrice = unitPrice; }
+    public BigDecimal getPrice() { return price; }
+    public void setPrice(BigDecimal price) { this.price = price; }
 
-    public BigDecimal getTotalPrice() { return totalPrice; }
-    public void setTotalPrice(BigDecimal totalPrice) { this.totalPrice = totalPrice; }
+    public BigDecimal getSubtotal() { return subtotal; }
+    public void setSubtotal(BigDecimal subtotal) { this.subtotal = subtotal; }
 }
