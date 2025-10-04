@@ -25,8 +25,8 @@ public class ReceiptItem {
     @Column(name = "product_name", nullable = false)
     private String productName;
 
-    @Column(name = "product_uuid", nullable = false)
-    private String productUuid;
+    @Column(name = "product_id", nullable = false)
+    private String productId;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
@@ -40,11 +40,11 @@ public class ReceiptItem {
     // Constructors
     public ReceiptItem() {}
 
-    public ReceiptItem(Receipt receipt, String productName, String productUuid,
+    public ReceiptItem(Receipt receipt, String productName, String productId,
                        Integer quantity, BigDecimal unitPrice, BigDecimal totalPrice) {
         this.receipt = receipt;
         this.productName = productName;
-        this.productUuid = productUuid;
+        this.productId = productId;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.totalPrice = totalPrice;

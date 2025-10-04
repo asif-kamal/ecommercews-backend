@@ -1,9 +1,12 @@
 package com.electronics.pgdata.dto;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Data
 public class ReceiptDTO {
     private String userId;
     private String userEmail;
@@ -24,23 +27,4 @@ public class ReceiptDTO {
         this.total = total;
         this.orderDate = orderDate;
     }
-
-    // Getters and Setters
-    public String getUserId() { return userId; }
-    public void setUserId(String userId) { this.userId = userId; }
-
-    public String getUserEmail() { return userEmail; }
-    public void setUserEmail(String userEmail) { this.userEmail = userEmail; }
-
-    public String getUserName() { return userName; }
-    public void setUserName(String userName) { this.userName = userName; }
-
-    public List<ReceiptItemDTO> getItems() { return items; }
-    public void setItems(List<ReceiptItemDTO> items) { this.items = items; }
-
-    public BigDecimal getTotal() { return total; }
-    public void setTotal(BigDecimal total) { this.total = total; }
-
-    public LocalDateTime getOrderDate() { return orderDate; }
-    public void setOrderDate(LocalDateTime orderDate) { this.orderDate = orderDate; }
 }

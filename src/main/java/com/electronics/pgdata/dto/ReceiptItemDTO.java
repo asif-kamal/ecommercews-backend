@@ -1,7 +1,10 @@
 package com.electronics.pgdata.dto;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 
+@Data
 public class ReceiptItemDTO {
     private String productId;
     private String productName;
@@ -20,20 +23,4 @@ public class ReceiptItemDTO {
         this.price = price;
         this.subtotal = subtotal;
     }
-
-    // Getters and Setters
-    public String getProductId() { return productId; }
-    public void setProductId(String productId) { this.productId = productId; }
-
-    public String getProductName() { return productName; }
-    public void setProductName(String productName) { this.productName = productName; }
-
-    public Integer getQuantity() { return quantity; }
-    public void setQuantity(Integer quantity) { this.quantity = quantity; }
-
-    public BigDecimal getPrice() { return price; }
-    public void setPrice(BigDecimal price) { this.price = price; }
-
-    public BigDecimal getSubtotal() { return subtotal; }
-    public void setSubtotal(BigDecimal subtotal) { this.subtotal = subtotal; }
 }

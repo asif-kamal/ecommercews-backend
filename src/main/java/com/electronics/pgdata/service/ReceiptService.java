@@ -47,15 +47,15 @@ public class ReceiptService {
             final Receipt savedReceipt = receiptRepository.save(receipt);
             System.out.println("Receipt saved with UUID: " + receipt.getReceiptUuid());
 
-            // Create receipt items
+            // Create receipt items - fix the field mapping
             List<ReceiptItem> receiptItems = receiptDTO.getItems().stream()
                     .map(itemDTO -> new ReceiptItem(
                             savedReceipt,
                             itemDTO.getProductName(),
-                            itemDTO.getProductId(),
+                            itemDTO.getProductId(), // This maps productId to productUuid
                             itemDTO.getQuantity(),
-                            itemDTO.getPrice(),
-                            itemDTO.getSubtotal()
+                            itemDTO.getPrice(),     // This maps to unitPrice
+                            itemDTO.getSubtotal()   // This maps to totalPrice
                     ))
                     .collect(Collectors.toList());
 
@@ -78,6 +78,7 @@ public class ReceiptService {
             throw new RuntimeException("Failed to create receipt", e);
         }
     }
+
 
 
     public List<Receipt> getUserReceipts(String userEmail) {
