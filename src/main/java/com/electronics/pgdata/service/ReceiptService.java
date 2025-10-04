@@ -44,13 +44,13 @@ public class ReceiptService {
             receipt.setTaxAmount(taxAmount);
 
             // Save receipt first to get ID
-            receipt = receiptRepository.save(receipt);
+            final Receipt savedReceipt = receiptRepository.save(receipt);
             System.out.println("Receipt saved with UUID: " + receipt.getReceiptUuid());
 
             // Create receipt items
             List<ReceiptItem> receiptItems = receiptDTO.getItems().stream()
                     .map(itemDTO -> new ReceiptItem(
-                            receipt,
+                            savedReceipt,
                             itemDTO.getProductName(),
                             itemDTO.getProductId(),
                             itemDTO.getQuantity(),

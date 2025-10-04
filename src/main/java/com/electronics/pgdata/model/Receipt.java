@@ -1,5 +1,7 @@
 package com.electronics.pgdata.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +13,7 @@ import java.util.List;
 @Entity
 @Data
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "receipts")
 public class Receipt {
 
@@ -37,6 +40,7 @@ public class Receipt {
     private LocalDateTime createdOn;
 
     @OneToMany(mappedBy = "receipt", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<ReceiptItem> receiptItems;
 
     // Constructors

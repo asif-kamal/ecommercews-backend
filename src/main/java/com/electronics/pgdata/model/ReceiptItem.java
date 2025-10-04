@@ -1,5 +1,7 @@
 package com.electronics.pgdata.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -7,6 +9,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "receipt_items")
 public class ReceiptItem {
 
@@ -16,6 +19,7 @@ public class ReceiptItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receipt_id", nullable = false)
+    @JsonBackReference
     private Receipt receipt;
 
     @Column(name = "product_name", nullable = false)
