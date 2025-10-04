@@ -1,7 +1,7 @@
 package com.electronics.pgdata.controller;
 
 import com.electronics.pgdata.dto.ReceiptDTO;
-import com.electronics.pgdata.entity.Receipt;
+import com.electronics.pgdata.model.Receipt;
 import com.electronics.pgdata.service.ReceiptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

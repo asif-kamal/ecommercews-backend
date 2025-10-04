@@ -37,12 +37,13 @@ public class ReceiptService {
 
             // Save receipt first to get ID
             receipt = receiptRepository.save(receipt);
+            final Receipt savedReceipt = receipt;
             System.out.println("Receipt saved with UUID: " + receipt.getReceiptUuid());
 
             // Create receipt items
             List<ReceiptItem> receiptItems = receiptDTO.getItems().stream()
                     .map(itemDTO -> new ReceiptItem(
-                            receipt,
+                            savedReceipt,
                             itemDTO.getProductName(),
                             itemDTO.getProductUuid(),
                             itemDTO.getQuantity(),
