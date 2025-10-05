@@ -24,7 +24,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     private JWTTokenHelper jwtTokenHelper;
 
     // Add configurable frontend URL
-    @Value("${app.frontend.url:https://ecommercews-frontend-18cm.vercel.app}")
+    @Value("https://ecommercews-frontend-18cm.vercel.app")
     private String frontendUrl;
 
     @Override
