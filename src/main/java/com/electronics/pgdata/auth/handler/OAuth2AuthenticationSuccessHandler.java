@@ -6,6 +6,7 @@ import com.electronics.pgdata.auth.service.OAuth2Service;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -22,6 +23,10 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     @Autowired
     private JWTTokenHelper jwtTokenHelper;
 
+    // Add configurable frontend URL
+    @Value("${app.frontend.url:https://ecommercews-frontend-18cm.vercel.app}")
+    private String frontendUrl;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
@@ -30,6 +35,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         System.out.println("=== OAuth2 SUCCESS HANDLER CALLED ===");
         System.out.println("Request URI: " + request.getRequestURI());
         System.out.println("Authentication: " + authentication.getClass().getName());
+        System.out.println("Frontend URL configured: " + frontendUrl);
 
         try {
             OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
@@ -40,7 +46,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
             if (email == null) {
                 System.err.println("No email found in OAuth2 user");
-                response.sendRedirect("http://localhost:3000/oauth2/callback?error=no_email");
+                response.sendRedirect(frontendUrl + "/oauth2/callback?error=no_email");
                 return;
             }
 
@@ -52,8 +58,8 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
             String token = jwtTokenHelper.generateToken(user.getUsername());
             System.out.println("Generated JWT token length: " + token.length());
 
-            // Redirect to frontend with token
-            String redirectUrl = "http://localhost:3000/oauth2/callback?token=" + token;
+            // Redirect to frontend with token (using configurable URL)
+            String redirectUrl = frontendUrl + "/oauth2/callback?token=" + token;
             System.out.println("Redirecting to: " + redirectUrl);
 
             response.sendRedirect(redirectUrl);
@@ -61,7 +67,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         } catch (Exception e) {
             System.err.println("OAuth2 success handler error: " + e.getMessage());
             e.printStackTrace();
-            response.sendRedirect("http://localhost:3000/oauth2/callback?error=handler_error");
+            response.sendRedirect(frontendUrl + "/oauth2/callback?error=handler_error");
         }
     }
 }

@@ -52,3 +52,7 @@ jwt:
     app: authapp
     secret_key: ${JWT_KEY}
     expires_in: 3600
+
+app:
+  frontend:
+    url: https://ecommercews-frontend-18cm.vercel.app
