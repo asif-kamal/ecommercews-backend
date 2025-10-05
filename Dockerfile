@@ -2,19 +2,18 @@
 FROM eclipse-temurin:24-jdk-alpine as build
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml first for better caching
-COPY mvnw .
-COPY .mvn .mvn
-COPY pom.xml .
+# Install Maven
+RUN apk add --no-cache maven
 
-# Download dependencies (cached layer if pom.xml doesn't change)
-RUN ./mvnw dependency:go-offline -B
+# Copy pom.xml and download dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline -B || true
 
 # Copy source code
 COPY src src
 
-# Build the application (skip tests for faster builds)
-RUN ./mvnw clean package -DskipTests
+# Build the application
+RUN mvn clean package -DskipTests
 
 # Runtime stage
 FROM eclipse-temurin:24-jre-alpine
